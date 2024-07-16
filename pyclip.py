@@ -116,7 +116,6 @@ def main():
             clparser.error("Output file name could not be parsed")
         outfile_name = os.path.join(os.path.dirname(args.outfile), outfile_match.group("name"))
         outfile_ext = outfile_match.group("extension")
-        
 
     if args.noaudio and args.novideo:
         logger.warning("The output stream will be empty")
