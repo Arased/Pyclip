@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import re
 import logging
@@ -23,6 +24,54 @@ FILENAME_PATTERN = re.compile(r"""(?x)
                               \. # dot
                               (?P<extension>.*$) # extension
                               """)
+
+
+class Formatter(logging.Formatter):
+    """Basic formatter subclass that adds color"""
+
+    GREY = "\x1b[38;20m"
+    YELLOW = "\x1b[33;20m"
+    RED = "\x1b[31;20m"
+    RED_BOLD = "\x1b[31;1m"
+    BLUE = "\x1b[34;20m"
+    RESET = "\x1b[0m"
+
+    FORMATS = {
+        logging.DEBUG: BLUE,
+        logging.INFO: GREY,
+        logging.WARNING: YELLOW,
+        logging.ERROR: RED,
+        logging.CRITICAL: RED_BOLD
+    }
+
+    def format(self, record):
+        return self.FORMATS[record.levelno] + super().format(record) + self.RESET
+
+
+def _init_logger(level : int):
+    """
+    Initialize the module logger for CLI
+
+    Args:
+        level (int): Level of verbosity between 0 and 2 (inclusive)
+                     Maps in order to WARNING, INFO, DEBUG
+                     Integers > 2 behave identically to 2
+
+    Raises:
+        ValueError: If a negative number was provided
+    """
+    if level == 0:
+        logger.setLevel(logging.WARNING)
+    elif level == 1:
+        logger.setLevel(logging.INFO)
+    elif level >= 2:
+        logger.setLevel(logging.DEBUG)
+    else:
+        raise ValueError(f"{level} is not a valid verbosity level")
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logger.level)
+    handler.setFormatter(Formatter("%(message)s"))
+    logger.addHandler(handler)
 
 
 def clip(infile : os.PathLike | str,
@@ -64,8 +113,11 @@ def clip(infile : os.PathLike | str,
 
 def main():
     """Main function"""
-    logging.basicConfig(level = logging.DEBUG)
     clparser = ArgumentParser("pyclip")
+    clparser.add_argument("-v", "--verbose",
+                          action = "count",
+                          default = 0,
+                          help = "Increase the verbosity (up to two times)")
     clparser.add_argument("-i", "--infile",
                           required = True,
                           help = "Path to the input file to extract clips from")
@@ -88,6 +140,8 @@ def main():
                           help = "Start and end timestamps of the clips to extract, \
                                   must go in pairs : start1 end1 [start2 end2 ...]")
     args = clparser.parse_args()
+
+    _init_logger(args.verbose)
 
     if len(args.timestamps) < 2 or len(args.timestamps) % 2 != 0:
         clparser.error(f"Mismatched number of timestamps : {len(args.timestamps)}")
