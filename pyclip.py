@@ -95,10 +95,13 @@ def clip(infile : os.PathLike | str,
         overwrite (bool, optional): Overwrite already existing files. Defaults to False.
         copy (bool, optional): Perform a simple copy and do not transcode. Defaults to False.
     """
-    command = ["ffmpeg", "-loglevel", "fatal", "-i", infile, "-ss", start_timestamp, "-to", end_timestamp]
+    command = ["ffmpeg",
+               "-loglevel", "fatal",
+               "-i", infile,
+               "-ss", start_timestamp,
+               "-to", end_timestamp]
     if copy:
-        command.append( "-c")
-        command.append("copy")
+        command.extend(["-c", "copy"])
     if no_audio:
         command.append("-an")
     if no_video:
