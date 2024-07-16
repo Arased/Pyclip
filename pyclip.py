@@ -111,11 +111,12 @@ def main():
             outfile_name = os.path.join(args.outfile, outfile_name)
         outfile_ext = infile_match.group("extension")
     else:
-        outfile_match = FILENAME_PATTERN.match(args.outfile)
+        outfile_match = FILENAME_PATTERN.match(os.path.basename(args.outfile))
         if outfile_match is None:
             clparser.error("Output file name could not be parsed")
-        outfile_name = outfile_match.group("name")
+        outfile_name = os.path.join(os.path.dirname(args.outfile), outfile_match.group("name"))
         outfile_ext = outfile_match.group("extension")
+        
 
     if args.noaudio and args.novideo:
         logger.warning("The output stream will be empty")
