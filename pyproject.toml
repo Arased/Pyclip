@@ -1,0 +1,26 @@
+[project]
+name = "pyclip"
+version = "0.1.0"
+description = "Extract clips from existing streams with FFMPEG"
+authors = [
+    {name = "Thomas Hervier", email = "hervier.thomas+python@proton.me"},
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = {text = "GPL-3.0-or-later"}
+
+[project.scripts]
+gofilecli = "pyclip:main"
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = [
+    "pyclip"
+]
