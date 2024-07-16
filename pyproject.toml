@@ -14,7 +14,7 @@ classifiers = [
 license = {text = "GPL-3.0-or-later"}
 
 [project.scripts]
-gofilecli = "pyclip:main"
+pyclip = "pyclip:main"
 
 [build-system]
 requires = ["setuptools", "setuptools-scm"]
