@@ -53,7 +53,7 @@ def clip(infile : os.PathLike | str,
     if no_audio:
         command.append("-an")
     if no_video:
-        command.append("-")
+        command.append("-vn")
     if overwrite:
         command.append("-y")
     else:
@@ -124,7 +124,7 @@ def main():
         logger.info("Extracting clip %s of %s", clip_nb, clip_total)
         logger.debug("Clip timestamps : %s - %s", start, end)
         if clip_total > 1:
-            outfile = outfile_name + f"_{clip_nb}." + outfile_ext
+            outfile = outfile_name + f"_{clip_nb:02}." + outfile_ext
         else:
             outfile = outfile_name + "." + outfile_ext
         logger.debug("Extracting to : %s", outfile)
